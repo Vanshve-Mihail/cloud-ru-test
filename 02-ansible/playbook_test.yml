@@ -1,0 +1,79 @@
+---
+- name: 02-ansible
+  hosts: SERV2
+  become: yes
+  tasks:
+    - name: Ping VM
+      ping:
+    - name: Install docker dependencies
+      apt:
+        name: '{{ item }}'
+        state: present
+        update_cache: yes
+      loop:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - gnupg-agent
+          - software-properties-common
+    - name: Add GPG key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: add docker repository to apt
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu bionic stable
+        state: present
+    - name: Install Docker
+      apt:
+        name: '{{ item }}'
+        state: latest
+        update_cache: yes
+      loop:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+    - name: Check install docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+    - name: Adding user to docker group
+      user:
+        name: osboxes
+        groups: docker
+        append: yes
+    - name: Docker login
+      docker_login:
+        username: m.vanshev@mail.ru
+        password: 416256misha
+        registry: https://index.docker.io/v1/
+    - name: Docker pull image
+      docker_image:
+        name: tokyombappy/test:latest
+        source: pull
+    - name: Create 3 application docker container
+      docker_container:
+        name: "app{{ item }}"
+        image: tokyombappy/test:latest
+        ports:
+          - "{{ 8000 + item }}:8000"
+        state: started
+      loop: [1, 2, 3]
+    - name: Install nginx
+      apt:
+        name: nginx
+        state: present
+    - name: Copy nginx.conf
+      copy:
+        src: /home/zxc/nginx.conf
+        dest: /etc/nginx/nginx.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart nginx
+  handlers:
+    - name: Restart nginx
+      service:
+        name: nginx
+        state: restarted
