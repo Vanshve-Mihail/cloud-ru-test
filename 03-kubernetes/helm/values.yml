@@ -1,0 +1,2 @@
+image: "tokyombappy/test:latest"
+replicaCount: 3
