@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: echo-app-namespace
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: echo-app
+  namespace: echo-app-namespace
+  labels:
+    owner: Vanshev-Mihail
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      project: echo-app-Vanshev
+  template:
+    metadata:
+      labels:
+        project: echo-app-Vanshev
+    spec:
+      containers:
+        - name: echo-app
+          image: {{ .Values.image }}
+          ports:
+            - containerPort: 8000
+          env:
+            - name: AUTHOR
+              value: "Vasnhev-Mihail"
+      imagePullSecrets:
+        - name: secret
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service
+  namespace: echo-app-namespace
+  labels:
+    owner: Mihail-Vanshev
+spec:
+  selector:
+    project: echo-app-Vanshev
+  ports:
+    - name: app-listenner
+      protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: ClusterIP
