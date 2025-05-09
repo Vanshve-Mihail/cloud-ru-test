@@ -1,8 +1,9 @@
 Создание контейнера, запуск команды apt-get update, демонстрация того, что она работает.
 ![image](https://github.com/user-attachments/assets/632df67e-162e-40c6-ad11-2f99eb8b7250)
 Для запрета выхода в интернет контейнеру, я установил пустой резолвер и поставил права доступа только на чтение файла, то есть контейнер не сможет преобразовывать доменные имена в ip адреса. У этого способа есть минус – если контейнер напрямую будет использовать ip адреса, то он все равно сможет выходить в интернет. 
-![Uploading image.png…]()
+![image](https://github.com/user-attachments/assets/aaf885c4-e02a-410a-ad17-75421d3dbf1f)
 Демонстрация невыполнения команды apt-get update
-![Uploading image.png…]()
+![image](https://github.com/user-attachments/assets/3f27433b-177e-47d8-9bb7-da79c326ed72)
+
 
 
